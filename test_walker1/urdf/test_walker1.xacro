@@ -1,0 +1,110 @@
+<?xml version = "1.0"?>
+<robot name = "test_walker1" xmlns:xacro = "https://ros.org/wiki/xacro">
+
+	<xacro:property name = "length" value = "0.5"/>
+	<xacro:property name = "length2" value = "0.1"/>
+
+	<material name = "red">
+		<color rgba = "1.0 0.0 0.0 1.0"/>
+	</material>
+
+	<material name = "green">
+		<color rgba = "0.0 1.0 0.0 1.0"/>
+	</material>
+
+	<material name = "blue">
+		<color rgba = "0.0 0.0 1.0 1.0"/>
+	</material>
+
+
+
+	<xacro:macro name="link_macro" params="name xyz ixx ixy ixz iyy iyz izz mass filename color">
+		<link name="${name}">
+			<inertial>
+				<origin xyz = "${xyz}" rpy = "0 0 0"/>
+				<mass value="${mass}"/>
+				<inertia ixx="${ixx}" ixy="${ixy}"  ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+			</inertial>
+			<visual>
+				<origin xyz = "0 0 0" rpy = "0 0 0"/>
+				<geometry>
+					<mesh filename = "${filename}"/>
+				</geometry>
+				<xacro:if value = "${color == 'red'}">
+					<material name = "red"/>
+				</xacro:if>
+				<xacro:if value = "${color == 'green'}">
+					<material name = "green"/>
+				</xacro:if>
+				<xacro:if value = "${color == 'blue'}">
+					<material name = "blue"/>
+				</xacro:if>
+
+			</visual>
+			<collision>
+				<origin xyz = "0 0 0" rpy = "0 0 0"/>
+				<geometry>
+					<mesh filename = "${filename}"/>
+				</geometry>
+			</collision>
+		</link>
+	</xacro:macro>
+
+	<xacro:macro name="joint_macro" params="name xyz rpy parent child type">
+		<joint name="${name}" type="${type}">
+			<parent link="${parent}"/>
+			<child link="${child}"/>
+			<axis xyz="0 1 0"/>
+			<origin xyz="${xyz}" rpy="${rpy}"/>
+			<dynamics damping="0.02"/>
+			<limit lower="-2.5" upper="2.5" effort="8.0" velocity="6.0"/>
+		</joint>
+	</xacro:macro>
+	
+	<xacro:macro name="trans_macro" params="name joint_name act_name">
+		<transmission name="${name}">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${joint_name}">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${act_name}">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanismReduction>1</mechanismReduction>
+			</actuator>
+		</transmission>
+	</xacro:macro>
+
+
+	<xacro:link_macro name="base_link" xyz = "0 0.25 0.010157" ixx="0.05806957271" ixy="0.0" ixz="0.0" iyy="0.04009091132" iyz="0.0" izz="0.09532090102" mass="1.692224" filename = "stl/test_walker-base.stl" color="blue"/>
+
+	<xacro:joint_macro name="hip_joint1" xyz="0 0.03 -0.06" rpy="0.0 0.0 0.0" parent="base_link" child="thigh_link1" type="revolute"/>
+	<xacro:trans_macro name="hip_joint1_trans" joint_name="hip_joint1" act_name="hip_motor1"/>	
+	<xacro:link_macro name="thigh_link1" xyz = "0 0 -0.177168" ixx="0.008759550907" ixy="0.0" ixz="0.0" iyy="0.009172527951" iyz="0.0" izz="0.000664142121" mass="0.964319" filename = "stl/test_walker1-thigh.stl" color="red"/>
+	<xacro:joint_macro name="knee_joint1" xyz="0.0 0.0 -0.359" rpy="0.0 0.0 0.0" parent="thigh_link1" child="shin_link1" type="revolute"/>
+	<xacro:trans_macro name="knee_joint1_trans" joint_name="knee_joint1" act_name="knee_motor1"/>	
+	<xacro:link_macro name="shin_link1" xyz = "0.01097 0.0 -0.24764" ixx="0.006133731562" ixy="0.0" ixz="0.000424378116" iyy="0.006415913276" iyz="0.0" izz="0.000301351016" mass="0.292265" filename = "stl/test_walker1-shin.stl" color="green"/>
+
+	<xacro:joint_macro name="hip_joint2" xyz="0 0.17 -0.06" rpy="0.0 0.0 0.0" parent="base_link" child="thigh_link2" type="revolute"/>
+	<xacro:trans_macro name="hip_joint2_trans" joint_name="hip_joint2" act_name="hip_motor2"/>	
+	<xacro:link_macro name="thigh_link2" xyz = "0 0 -0.177168" ixx="0.008759550907" ixy="0.0" ixz="0.0" iyy="0.009172527951" iyz="0.0" izz="0.000664142121" mass="0.964319" filename = "stl/test_walker1-thigh.stl" color="red"/>
+	<xacro:joint_macro name="knee_joint2" xyz="0.0 0.0 -0.359" rpy="0.0 0.0 0.0" parent="thigh_link2" child="shin_link2" type="revolute"/>
+	<xacro:trans_macro name="knee_joint2_trans" joint_name="knee_joint2" act_name="knee_motor2"/>	
+	<xacro:link_macro name="shin_link2" xyz = "0.01097 0.0 -0.24764" ixx="0.006133731562" ixy="0.0" ixz="0.000424378116" iyy="0.006415913276" iyz="0.0" izz="0.000301351016" mass="0.292265" filename = "stl/test_walker1-shin.stl" color="green"/>
+
+	<xacro:joint_macro name="hip_joint3" xyz="0 0.33 -0.06" rpy="0.0 0.0 0.0" parent="base_link" child="thigh_link3" type="revolute"/>
+	<xacro:trans_macro name="hip_joint3_trans" joint_name="hip_joint3" act_name="hip_motor3"/>	
+	<xacro:link_macro name="thigh_link3" xyz = "0 0 -0.177168" ixx="0.008759550907" ixy="0.0" ixz="0.0" iyy="0.009172527951" iyz="0.0" izz="0.000664142121" mass="0.964319" filename = "stl/test_walker1-thigh.stl" color="red"/>
+	<xacro:joint_macro name="knee_joint3" xyz="0.0 0.0 -0.359" rpy="0.0 0.0 0.0" parent="thigh_link3" child="shin_link3" type="revolute"/>
+	<xacro:trans_macro name="knee_joint3_trans" joint_name="knee_joint3" act_name="knee_motor3"/>	
+	<xacro:link_macro name="shin_link3" xyz = "0.01097 0.0 -0.24764" ixx="0.006133731562" ixy="0.0" ixz="0.000424378116" iyy="0.006415913276" iyz="0.0" izz="0.000301351016" mass="0.292265" filename = "stl/test_walker1-shin.stl" color="green"/>
+
+	<xacro:joint_macro name="hip_joint4" xyz="0 0.47 -0.06" rpy="0.0 0.0 0.0" parent="base_link" child="thigh_link4" type="revolute"/>
+	<xacro:trans_macro name="hip_joint4_trans" joint_name="hip_joint4" act_name="hip_motor4"/>	
+	<xacro:link_macro name="thigh_link4" xyz = "0 0 -0.177168" ixx="0.008759550907" ixy="0.0" ixz="0.0" iyy="0.009172527951" iyz="0.0" izz="0.000664142121" mass="0.964319" filename = "stl/test_walker1-thigh.stl" color="red"/>
+	<xacro:joint_macro name="knee_joint4" xyz="0.0 0.0 -0.359" rpy="0.0 0.0 0.0" parent="thigh_link4" child="shin_link4" type="revolute"/>
+	<xacro:trans_macro name="knee_joint4_trans" joint_name="knee_joint4" act_name="knee_motor4"/>	
+	<xacro:link_macro name="shin_link4" xyz = "0.01097 0.0 -0.24764" ixx="0.006133731562" ixy="0.0" ixz="0.000424378116" iyy="0.006415913276" iyz="0.0" izz="0.000301351016" mass="0.292265" filename = "stl/test_walker1-shin.stl" color="green"/>
+
+</robot>
+
+			
