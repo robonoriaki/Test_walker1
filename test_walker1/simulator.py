@@ -71,14 +71,17 @@ for i in range (10000):
     #print(conflag)
 
    
+    print('conflag')
     conflen = len(conflag)
     if conflen != 0:
-        print('conflag')
-        print(conflag[0][0])
+        if conflag[0][0] == 0:
+            print('contact!')
+    else:
+        print('no contct..')
 
     #display
     p.stepSimulation()
-    #time.sleep(1./100000.)
+    time.sleep(1./240.)
 
     #basePos, baseQua = p.getBasePositionAndOrientation(robotId)
     #print(basePos,baseQua)
