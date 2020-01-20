@@ -100,9 +100,9 @@ sleeptime = 500
 #swhiptime = 560
 swhiptime = 560
 #swkneetime = 570
-swkneetime = 600
+swkneetime = 590
 #suhiptime = 515
-suhiptime = 510
+suhiptime = 515
 sukneetime = 540
 
 swkneemovetime = (swkneetime - sleeptime) * 0.8
@@ -301,7 +301,7 @@ while True:
     #step forward in the simlation
     p.stepSimulation()
     #wait a bit  to smooth the simulation
-    time.sleep(1./150.)
+    time.sleep(1./300.)
 
 p.disconnect()
 
